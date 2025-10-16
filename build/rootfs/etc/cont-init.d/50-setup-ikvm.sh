@@ -25,7 +25,7 @@ APP_CACHE_DIR=$XDG_CACHE_HOME
 
 get_launch_jnlp() {
     fail=1
-    url="https://$KVM_HOST"
+    url="http://$KVM_HOST"
     temp=$(mktemp)
     if curl --fail -sk --cookie-jar "$temp" -XPOST "$url/cgi/login.cgi" \
           --data "name=$KVM_USER&pwd=$KVM_PASS&check=00" -o/dev/null; then
