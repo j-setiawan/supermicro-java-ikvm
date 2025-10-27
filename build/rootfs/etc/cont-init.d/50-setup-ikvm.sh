@@ -28,7 +28,9 @@ get_launch_jnlp() {
     fail=1
     url="http://$KVM_HOST"
     temp=$(mktemp)
-    if curl --fail -sk --cookie-jar "$temp" -XPOST "$url/cgi/login.cgi?name=$KVM_USER&pwd=$KVM_PASS&check=00" -o/dev/null; then
+    
+    if curl --fail -sk --cookie-jar "$temp" -XPOST "$url/cgi/login.asp" \
+          --data "name=$KVM_USER&pwd=$KVM_PASS&check=00" -o/dev/null; then
         launch_jnlp=$(curl --fail -sk --cookie "$temp" \
             --referer "$url/cgi/url_redirect.cgi?url_name=man_ikvm" \
             "$url/cgi/url_redirect.cgi?url_name=man_ikvm&url_type=jwsk")
