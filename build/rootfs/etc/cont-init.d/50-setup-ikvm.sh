@@ -1,9 +1,6 @@
 #!/bin/sh
 # ipmikvm-tls2020 (part of ossobv/vcutil) // wdoekes/2020 // Public Domain
 #
-# MODIFIED to support Supermicro BMCs that use a complex JS-based download trigger.
-# Final version based on decompiled JS analysis.
-#
 # A wrapper to call the SuperMicro iKVM console bypassing Java browser
 # plugins.
 #
@@ -22,21 +19,9 @@ get_launch_jnlp() {
     if curl --fail -sk --cookie-jar "$temp" -XPOST "$url/login.asp" \
           --data "name=$KVM_USER&pwd=$KVM_PASS" -o/dev/null; then
 
-        JNLP_URL="$url/Java/jviewer.jnlp"
-        REFERER_URL="$url/page/main.html" 
-
-        echo "Attempting to download JNLP from $JNLP_URL" >&2
-
         launch_jnlp=$(curl --fail -sk --cookie "$temp" \
-            --referer "$REFERER_URL" \
-            "$JNLP_URL")
-
-        if [ $? -eq 0 ] && echo "$launch_jnlp" | grep -q "<jnlp"; then
-            fail=""
-            echo "Successfully fetched JNLP content." >&2
-        else
-            echo "Failed to fetch or validate JNLP content from $JNLP_URL" >&2
-        fi
+            --referer "$url/page/jnlp_launcher.html" \
+            "$url/Java/jviewer.jnlp")
     fi
     rm "$temp"
     test -z "$fail" && echo "$launch_jnlp"
